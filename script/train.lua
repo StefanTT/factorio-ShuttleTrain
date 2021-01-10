@@ -171,7 +171,7 @@ function onTrackedTrainControlTimer()
   for id,track in pairs(global.trackedTrains) do
     local train = track.train
     if not train.valid or untrack[train.state] then
-      untrackTrain(train)
+      untrackTrain(train, id)
       return -- avoid problems because we modified global.trackedTrains
     end
   end
@@ -258,10 +258,12 @@ end
 -- Stop tracking a train
 --
 -- @param train The LuaTrain to stop tracking
+-- @param id The ID of the train (optional)
 --
-function untrackTrain(train)
-  global.trackedTrains[train.id] = nil
-  log("stop tracking train #"..train.id)
+function untrackTrain(train, id)
+  if not id then id = train.id end
+  global.trackedTrains[id] = nil
+  log("stop tracking train #"..id)
 
   if not next(global.trackedTrains) then
     log("unregistering timer for train tracking")
