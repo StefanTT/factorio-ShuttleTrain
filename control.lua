@@ -55,9 +55,9 @@ function callShuttleTrain(player, station)
   end
   if station then  
     if train.station == station then
-      player.print{"info.pickupTrainAtStation", station.backer_name}
+      player.print{"info.pickupTrainAtStation", station.unit_number}
     else
-      player.print{"info.sendPickupTrain", station.backer_name}
+      player.print{"info.sendPickupTrain", train.front_stock.unit_number, station.unit_number}
       sendPickupTrain(train, player, station)
     end
   elseif findNearbyEntity(player, "train-stop") then
@@ -65,7 +65,7 @@ function callShuttleTrain(player, station)
   else
     local rail = findNearbyEntity(player, "straight-rail")
     if rail then
-      player.print{"info.sendPickupTrainToRail"}
+      player.print{"info.sendPickupTrainToRail", train.front_stock.unit_number}
       sendPickupTrain(train, player, rail)
     else
       player.print{"error.noPickupFound"}
@@ -91,7 +91,7 @@ function playerClickedStation(player, stationName)
     if controlsShuttleTrain(player) then
       local train = player.vehicle.train
       if train.station and train.station.backer_name == stationName then
-        player.print{"info.alreadyThere", stationName}
+        player.print{"info.alreadyThere", station.unit_number}
         return
       end
       transportTo(train, player, station)
