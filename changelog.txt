@@ -1,4 +1,22 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.5
+Date: 2021-01-13
+  New features:
+    - Close station selection dialog when the shuttle train the player is riding is switched to
+      manual control.
+    - Close station selection dialog when the player opens a locomotive of the shuttle train he
+      is riding.
+  Bugfix:
+    - Fix / cleanup info chat messages and make them more robust.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.4
+Date: 2021-01-12
+  New feature:
+    - Improved info chat messages (thanks to DeviousNull for the patch).
+  Bugfix:
+    - Avoid crash when requesting a shuttle train while standing next to a train station that
+      has no rails.
+---------------------------------------------------------------------------------------------------
 Version: 1.0.3
 Date: 2021-01-12
   Bugfix:
@@ -18,5 +36,5 @@ Date: 2021-01-10
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.0
 Date: 2021-01-08
-  First release
+  First release.
 

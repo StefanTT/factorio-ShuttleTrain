@@ -40,7 +40,7 @@ end
 
 
 --
--- Called when a train changes status (started to stopped and vice versa)
+-- Called when a train changes status (started to stopped and vice versa).
 --
 -- @param event The event containing
 --        train :: LuaTrain
@@ -50,6 +50,14 @@ local function onTrainChangedStatus(event)
   local train = event.train
   if global.trackedTrains[train.id] and not ignoredStates[train.state] then
     onTrackedTrainChangedStatus(train)
+  end
+  -- Close the station selection dialog when the train is switched to manual control
+  if train.state == defines.train_state.manual_control then
+    for _,player in pairs(game.players) do
+      if controlsShuttleTrain(player) and player.vehicle.train == event.train then
+        closeDialog(player)
+      end
+    end
   end
 end
 
@@ -119,6 +127,29 @@ end
 
 
 --
+--  Called when the player opens a GUI.
+--
+-- @param event The event containing:
+--        player_index :: uint: The player
+--        gui_type :: defines.gui_type: The GUI type that was opened
+--        entity :: LuaEntity (optional): The entity that was opened
+--        item :: LuaItemStack (optional): The item that was opened
+--        equipment :: LuaEquipment (optional): The equipment that was opened
+--        other_player :: LuaPlayer (optional): The other player that was opened
+--        element :: LuaGuiElement (optional): The custom GUI element that was opened
+--
+function onGuiOpened(event)
+  -- Close the station selection dialog when the player opens a locomotive of the train he is sitting in
+  if event.gui_type == defines.gui_type.entity then
+    local player = game.players[event.player_index]
+    if event.entity.train and player and player.vehicle and player.vehicle.train == event.entity.train then
+      closeDialog(player)
+    end
+  end
+end
+
+
+--
 -- A GUI element was clicked.
 --
 -- @param event The event containing
@@ -167,6 +198,7 @@ function registerEvents()
   script.on_event(defines.events.on_lua_shortcut, onShortcut)
   script.on_event("call-shuttle-train", onCallShuttleTrain)
   script.on_event("send-shuttle-train-to-depot", onSendShuttleTrainToDepot)
+  script.on_event(defines.events.on_gui_opened, onGuiOpened)
   script.on_event(defines.events.on_gui_click, onGuiClick)
   script.on_event(defines.events.on_gui_text_changed, onGuiTextChanged)
 end

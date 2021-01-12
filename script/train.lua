@@ -77,7 +77,7 @@ function sendPickupTrain(train, player, destination)
   -- at the rail where the station is placed. This allows the train to
   -- path to the correct station, in case there are multiple train stops
   -- with the same name.
-  if destination.type == "train-stop" then
+  if destination.type == "train-stop" and destination.connected_rail then
     table.insert(recs, createScheduleRecord(destination.connected_rail,
       {{ type = "time", compare_type = "and", ticks = 0 -- 0 ticks => temporary stop
       }}))
@@ -222,25 +222,25 @@ end
 --
 function trackedTrainLostPath(train, player, destinationName, status)
   if player.valid then
-    player.print({"error.trainLostPath", destinationName})
+    player.print{"error.trainLostPath", trainRef(train)}
   end
 
-  if #train.passengers > 0 then return end
+  if #train.passengers > 0 or not train.valid then return end
 
   local depotName = depotNameOf(player)
   if depotName == destinationName then
-    player.print({"info.fixTrain"})
+    player.print{"info.fixTrain", trainRef(train)}
     return
   end
 
   local depot = findStationByName(depotName, player)
   if not depot then
-    player.print({"info.fixTrain"})
-    player.print({"info.fixTrainHint"})
+    player.print{"info.fixTrain", trainRef(train)}
+    player.print{"info.fixTrainHint"}
     return
   end
 
-  player.print({"info.fixTrainDepot"})
+  player.print{"info.fixTrainDepot", trainRef(train)}
   sendTrainToDepot(train, player)
 end
 

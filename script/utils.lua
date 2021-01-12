@@ -3,6 +3,37 @@
 
 
 --
+-- Create a string for a train reference.
+--
+-- @param train The LuaTrain to get the reference for
+-- @return The generated reference string
+--
+function trainRef(train)
+  if train.valid then
+    if train.front_stock and train.front_stock.valid then
+      return "[train="..train.front_stock.unit_number.."]"
+    end
+    return train.backer_name;
+  end
+  return "<invalid train>"
+end
+
+
+--
+-- Create a string for a train station reference.
+--
+-- @param station The LuaEntity of the train stop to get the reference for
+-- @return The generated reference string
+--
+function stationRef(station)
+  if station.valid then
+    return "[train-stop="..station.unit_number.."]"
+  end
+  return "<invalid station>"
+end
+
+
+--
 -- Calculate the distance of two LuaControl objects to each other
 --
 -- @param obj1 The first LuaControl object
