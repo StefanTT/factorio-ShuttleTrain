@@ -1,10 +1,22 @@
-# Version 1.0.2
-  * ensure the station next to the player is used for pickup if multiple stations
-    with the same name exist (thanks to DeviousNull for the patch)
-
-# Version 1.0.1
-  * fixed crash when a called shuttle train is destroyed
-
-# Version 1.0.0
-  * first release
+---------------------------------------------------------------------------------------------------
+Version: 1.0.3
+Date: 2021-01-12
+  Bugfix:
+    - Avoid problems when transporting to a destination where multiple stations with the
+      same name exist by using a temporary stop for the first destination.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.2
+Date: 2021-01-12
+  New feature:
+    - Ensure the station next to the player is used for pickup if multiple stations
+      with the same name exist (thanks to DeviousNull for the patch).
+---------------------------------------------------------------------------------------------------
+Version: 1.0.1
+Date: 2021-01-10
+  Bugfix:
+    - Fixed crash when a called shuttle train is destroyed.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.0
+Date: 2021-01-08
+  First release
 

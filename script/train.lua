@@ -159,11 +159,11 @@ function transportTo(train, player, destination)
 
   if exitAction == "Depot" and depotName ~= "" then
     train.schedule = { current = 1, records = {
-      {station = destination.backer_name, wait_conditions = {{type = "passenger_not_present", compare_type = "and"}}},
+      {rail = destination.connected_rail, temporary = true, wait_conditions = {
+        {type = "passenger_not_present", compare_type = "and"}}},
       {station = destination.backer_name, wait_conditions = {
         {type = "passenger_not_present", compare_type = "and"},
-        {type = "time", compare_type = "and", ticks = 180}
-      }},
+        {type = "time", compare_type = "and", ticks = 180}}},
       {station = depotName, wait_conditions = {{type = "circuit", compare_type = "and"}}}
     }}
   else
