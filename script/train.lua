@@ -58,7 +58,6 @@ local function createScheduleRecord(destination, waitConditions)
   end
 end
 
-
 --
 -- Send a train to a station to pickup passengers.
 --
@@ -72,25 +71,66 @@ function sendPickupTrain(train, player, destination)
   log("sending shuttle train "..train.front_stock.backer_name.." to "..(destination.backer_name or "rail").." for "..player.name)
   train.manual_mode = true
 
-  local rec = createScheduleRecord(destination, {{type = "passenger_not_present", compare_type = "and"},
-    {type = "time", compare_type = "and", ticks = 720}})
+  local recs = {}
 
+  -- If the destination is a train stop, then we add a temporary record
+  -- at the rail where the station is placed. This allows the train to
+  -- path to the correct station, in case there are multiple train stops
+  -- with the same name.
+  if destination.type == "train-stop" then
+    table.insert(recs,
+      createScheduleRecord(destination.connected_rail,
+        {
+          {
+            type = "time",
+            compare_type = "and",
+            ticks = 0 -- 0 ticks => temporary stop
+          }
+        }
+      )
+    )
+  end
+
+  -- Next, a record is added for the destination itself (either a train stop, or a rail)
+  table.insert(recs,
+    createScheduleRecord(destination,
+      {
+        {
+          type = "passenger_not_present",
+          compare_type = "and"
+        }, {
+          type = "time",
+          compare_type = "and",
+          ticks = 7200
+        }
+      }
+    )
+  )
+
+  -- Finally, if the player has the appropriate option enabled,
+  -- then a record is added to return the train to the depot
   local exitAction = exitActionOf(player)
-  local depotName
-
   if exitAction == "Depot" then
-    depotName = depotNameOf(player)
+    local depotName = depotNameOf(player)
+    if depotName ~= "" then
+      table.insert(recs,
+        {
+          station = depotName,
+          wait_conditions = {
+            {
+              type = "circuit",
+              compare_type = "and"
+            }
+          }
+        }
+      )
+    end
   end
 
-  if exitAction == "Depot" and depotName ~= "" then
-    train.schedule = { current = 1, records = {
-      createScheduleRecord(destination, {{type = "passenger_not_present", compare_type = "and"},
-        {type = "time", compare_type = "and", ticks = 7200}}),
-      {station = depotName, wait_conditions = {{type = "circuit", compare_type = "and"}}}
-    }}
-  else
-    train.schedule = {current = 1, records = {createScheduleRecord(destination, nil)}}
-  end
+  train.schedule = {
+    current = 1,
+    records = recs
+  }
 
   train.manual_mode = false
   trackTrain(train, player, destination, STATUS_PICKUP)
