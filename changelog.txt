@@ -1,3 +1,7 @@
+# Version 1.0.2
+  * ensure the station next to the player is used for pickup if multiple stations
+    with the same name exist (thanks to DeviousNull for the patch)
+
 # Version 1.0.1
   * fixed crash when a called shuttle train is destroyed
 

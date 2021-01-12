@@ -54,7 +54,7 @@ local function createScheduleRecord(destination, waitConditions)
   if destination.type == "train-stop" then
     return {station = destination.backer_name, wait_conditions = waitConditions}
   else
-    return {rail = destination, wait_conditions = waitConditions}
+    return {rail = destination, temporary = true, wait_conditions = waitConditions}
   end
 end
 
@@ -78,34 +78,15 @@ function sendPickupTrain(train, player, destination)
   -- path to the correct station, in case there are multiple train stops
   -- with the same name.
   if destination.type == "train-stop" then
-    table.insert(recs,
-      createScheduleRecord(destination.connected_rail,
-        {
-          {
-            type = "time",
-            compare_type = "and",
-            ticks = 0 -- 0 ticks => temporary stop
-          }
-        }
-      )
-    )
+    table.insert(recs, createScheduleRecord(destination.connected_rail,
+      {{ type = "time", compare_type = "and", ticks = 0 -- 0 ticks => temporary stop
+      }}))
   end
 
   -- Next, a record is added for the destination itself (either a train stop, or a rail)
-  table.insert(recs,
-    createScheduleRecord(destination,
-      {
-        {
-          type = "passenger_not_present",
-          compare_type = "and"
-        }, {
-          type = "time",
-          compare_type = "and",
-          ticks = 7200
-        }
-      }
-    )
-  )
+  table.insert(recs, createScheduleRecord(destination,
+    {{ type = "passenger_not_present", compare_type = "and" },
+     { type = "time", compare_type = "and", ticks = 7200 }}))
 
   -- Finally, if the player has the appropriate option enabled,
   -- then a record is added to return the train to the depot
@@ -113,17 +94,8 @@ function sendPickupTrain(train, player, destination)
   if exitAction == "Depot" then
     local depotName = depotNameOf(player)
     if depotName ~= "" then
-      table.insert(recs,
-        {
-          station = depotName,
-          wait_conditions = {
-            {
-              type = "circuit",
-              compare_type = "and"
-            }
-          }
-        }
-      )
+      table.insert(recs, { station = depotName, wait_conditions =
+        {{ type = "circuit", compare_type = "and" }}})
     end
   end
 
