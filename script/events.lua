@@ -9,6 +9,33 @@ local ignoredStates = {
 }
 
 --
+-- Returns the next rail in front of a specified train.
+-- May return nil if there is no such rail.
+--
+-- @param train :: LuaTrain: The train
+--
+local function getNextRailForTrain(train)
+  if not train.front_rail then
+    return nil
+  end
+
+  local cdirs = {
+    defines.rail_connection_direction.straight,
+    defines.rail_connection_direction.left,
+    defines.rail_connection_direction.right
+  }
+
+  for _,v in ipairs(cdirs) do
+    local next_rail = train.front_rail.get_connected_rail{ rail_direction=train.rail_direction_from_front_rail, rail_connection_direction=v }
+    if next_rail then
+      return next_rail
+    end
+  end
+
+  return train.front_rail
+end
+
+--
 -- Called when the player's driving state has changed, this means a player has either entered or left a vehicle.
 --
 -- @param event The event containing
@@ -18,21 +45,49 @@ local ignoredStates = {
 local function onPlayerDrivingChangedState(event)
   if not event.entity or not event.entity.valid then return end
 
+  local train = event.entity.train
   local player = game.players[event.player_index]
   if not player then return end
 
   if player.vehicle then
     if controlsShuttleTrain(player) then
-      log("player "..player.name.." entered shuttle train "..player.vehicle.train.front_stock.backer_name)
+      log("player "..player.name.." entered shuttle train "..train.front_stock.backer_name)
       openDialog(player)
+      if #train.passengers == 1 then
+        train.schedule = nil
+        untrackTrain(train)
+      end
     end
   else
-    if event.entity.train and isShuttleTrain(event.entity.train) then
-      log("player "..player.name.." exited shuttle train "..event.entity.train.front_stock.backer_name)
+    if train and isShuttleTrain(train) then
+      log("player "..player.name.." exited shuttle train "..train.front_stock.backer_name)
       closeDialog(player)
-      if #event.entity.train.passengers == 0 then
+      if #train.passengers == 0 then
         log("shuttle train finished transportation")
-        untrackTrain(event.entity.train)
+        untrackTrain(train)
+
+        if exitActionOf(player) == "Automatic" then
+          log("exit action: wait for the player to return, and return to the depot after some time")
+          -- It is necessary to use the next rail instead of the current rail here.
+          -- Otherwise, the train will loop back around the track in order to reach its current position.
+
+          local target_rail = getNextRailForTrain(train)
+          if target_rail then
+            sendPickupTrain(train, player, target_rail)
+          else
+            log("warning: the target rail of shuttle train "..train.front_stock.backer_name.." is nil! falling back to generic exit action (which will probably fail to find a path)")
+
+            sendTrainToDepot(train, player)
+          end
+        elseif exitActionOf(player) == "Depot" then
+          log("exit action: order train back to depot immediately")
+
+          sendTrainToDepot(train, player)
+        elseif exitActionOf(player) == "Manual" then
+          log("exit action: switch train to manual mode")
+
+          train.manual_mode = true
+        end
       end
     end
   end

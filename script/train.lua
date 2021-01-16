@@ -88,15 +88,12 @@ function sendPickupTrain(train, player, destination)
     {{ type = "passenger_not_present", compare_type = "and" },
      { type = "time", compare_type = "and", ticks = 7200 }}))
 
-  -- Finally, if the player has the appropriate option enabled,
+  -- Finally, if the player has a depot name set,
   -- then a record is added to return the train to the depot
-  local exitAction = exitActionOf(player)
-  if exitAction == "Depot" then
-    local depotName = depotNameOf(player)
-    if depotName ~= "" then
-      table.insert(recs, { station = depotName, wait_conditions =
-        {{ type = "circuit", compare_type = "and" }}})
-    end
+  local depotName = depotNameOf(player)
+  if depotName ~= "" then
+    table.insert(recs, { station = depotName, wait_conditions =
+      {{ type = "circuit", compare_type = "and" }}})
   end
 
   train.schedule = {
@@ -150,25 +147,7 @@ function transportTo(train, player, destination)
   log("transport via shuttle train "..train.front_stock.backer_name.." to "..destination.backer_name.." for "..player.name)
   train.manual_mode = true
 
-  local exitAction = exitActionOf(player)
-  local depotName
-
-  if exitAction == "Depot" then
-    depotName = depotNameOf(player)
-  end
-
-  if exitAction == "Depot" and depotName ~= "" then
-    train.schedule = { current = 1, records = {
-      {rail = destination.connected_rail, temporary = true, wait_conditions = {
-        {type = "passenger_not_present", compare_type = "and"}}},
-      {station = destination.backer_name, wait_conditions = {
-        {type = "passenger_not_present", compare_type = "and"},
-        {type = "time", compare_type = "and", ticks = 180}}},
-      {station = depotName, wait_conditions = {{type = "circuit", compare_type = "and"}}}
-    }}
-  else
-    train.schedule = { current = 1, records = {{station = destination.backer_name}}}
-  end
+  train.schedule = { current = 1, records = {{station = destination.backer_name}}}
 
   train.manual_mode = false
   trackTrain(train, player, destination, STATUS_TRANSPORT)
@@ -201,9 +180,6 @@ function onTrackedTrainChangedStatus(train)
   if status == defines.train_state.wait_station then
     if train.station and train.station.backer_name == track.destinationName then
       untrackTrain(train)
-      if track.status == STATUS_TRANSPORT and exitActionOf(track.player) == "Manual" then
-        train.manual_mode = true
-      end
     end
   elseif status == defines.train_state.no_path or status == defines.train_state.path_lost then
     untrackTrain(train)
