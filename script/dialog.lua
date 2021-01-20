@@ -33,7 +33,6 @@ function closeDialog(player)
   if dialog then
     dialog.visible = false
   end
-  global.selectedCategory[player.index] = nil
 end
 
 
@@ -91,7 +90,8 @@ function openDialog(player)
     flow.add{type = "label", caption = {"dialog.search"}}
     searchField = flow.add{type = "textfield", name = DIALOG_SEARCH}
 
-    local pane = dialog.add{type = "scroll-pane", name = "stationsPane", horizontal_scroll_policy = "never" }
+    local pane = dialog.add{type = "scroll-pane", name = "stationsPane", horizontal_scroll_policy = "never",
+                            vertical_scroll_policy = "auto-and-reserve-space" }
     pane.style.horizontally_stretchable = true
   else
     searchField = dialog.flowSearch[DIALOG_SEARCH]
@@ -107,15 +107,31 @@ function openDialog(player)
   end
   searchField.text = ""
 
-  global.selectedCategory[player.index] = nil
+  local defaultCategorySetting = settings.get_player_settings(player)["shuttle-train-dialog-default"].value
+  if defaultCategorySetting == "history" then
+    global.selectedCategory[player.index] = DIALOG_CATEGORY_HISTORY
+  elseif defaultCategorySetting == "all" then
+    global.selectedCategory[player.index] = nil
+  end
+
   updateStationsDialog(player)
 end
 
 
 local function createCategoryButton(parent, idx, category, selected)
+  local style = "tool_button"
+  if selected then style = "highlighted_tool_button" end
+
   local btn
-  if category then
-    btn = parent.add{type = "button", name = DIALOG_CATEGORY_PREFIX..idx, caption = category}
+  if category == DIALOG_CATEGORY_HISTORY then
+    btn = parent.add{type = "sprite-button", style = style, name = DIALOG_CATEGORY_PREFIX..idx, caption = category,
+                     sprite = "utility/clock", tooltip = {"tooltip.categoryHistory"}}
+  elseif category == DIALOG_CATEGORY_ALL then
+    btn = parent.add{type = "button", style = style, name = DIALOG_CATEGORY_PREFIX..idx, caption = category,
+                     tooltip = {"tooltip.categoryAll"}}
+  elseif category then
+    btn = parent.add{type = "button", style = style, name = DIALOG_CATEGORY_PREFIX..idx, caption = category,
+                     tooltip = {"tooltip.category"}}
   else
     btn = parent.add{type = "label", name = DIALOG_CATEGORY_PREFIX..idx, caption = " "}
   end
@@ -155,11 +171,12 @@ function updateStationsDialog(player)
     end
   end
 
-  local selectedCategory = global.selectedCategory[player.index]
-  if selectedCategory == DIALOG_CATEGORY_ALL then selectedCategory = nil end
+  local selectedCategory = global.selectedCategory[player.index] or DIALOG_CATEGORY_ALL
+  local filterCategory = selectedCategory
+  if selectedCategory == DIALOG_CATEGORY_ALL then filterCategory = nil end
 
-  local idx = 1
-  local categories = { DIALOG_CATEGORY_ALL }
+  local categories = { DIALOG_CATEGORY_ALL, DIALOG_CATEGORY_HISTORY }
+  local idx = #categories
   local categoriesMap = {}
   for _,name in pairs(stationNames) do
     local category = string.gsub(name, "^%s*(%[[^%]]+%]).*$", "%1")
@@ -170,11 +187,16 @@ function updateStationsDialog(player)
     end
   end
 
+  if selectedCategory == DIALOG_CATEGORY_HISTORY then
+    stationNames = global.history[player.index] or {}
+    filterCategory = nil
+  end
+
   idx = 1
   local btn
   for _,name in pairs(stationNames) do
     if (search == "" or string.find(name:lower(), search, 1, true)) and
-       (not selectedCategory or string.find(name, selectedCategory, 1, true) == 1) then
+       (not filterCategory or string.find(name, filterCategory, 1, true) == 1) then
 
       createCategoryButton(stationsTable, idx, categories[idx], categories[idx] == selectedCategory)
 

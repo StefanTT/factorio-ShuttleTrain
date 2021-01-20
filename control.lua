@@ -30,6 +30,29 @@ function initGlobalVariables()
   -- The selected station category
   -- Key is the LuaPlayer::id, value is the name of the category
   global.selectedCategory = global.selectedCategory or {}
+
+  -- The history of the selected stations per player
+  -- Key is the LuaPlayer::id, value is a list of the selected stations
+  global.history = global.history or {}
+end
+
+
+--
+-- Add the given station to the player's station history, remove the oldest if the
+-- list is too long.
+--
+-- @param player The LuaPlayer
+-- @param stationName The name of the station to add
+--
+local function updateHistory(player, stationName)
+  local history = { stationName }
+  local maxEntries = settings.get_player_settings(player)["shuttle-train-gui-height"].value
+  for _,name in pairs(global.history[player.index] or {}) do
+    if name ~= stationName and #history < maxEntries then
+      table.insert(history, name)
+    end
+  end
+  global.history[player.index] = history
 end
 
 
@@ -53,7 +76,8 @@ function callShuttleTrain(player, station)
   if not station then
     station = findPickupStationFor(player)
   end
-  if station then  
+  if station then
+    updateHistory(player, station.backer_name)
     if train.station == station then
       player.print{"info.pickupTrainAtStation", stationRef(station)}
     else
@@ -75,30 +99,31 @@ end
 
 
 --
--- Transport the player to the given station using the train the player is in
+-- Transport the player to the given station using the train the player is in.
 --
 -- @param player The LuaPlayer that controls the train
 -- @param stationName The name of the destination station
 --
 function playerClickedStation(player, stationName)
-    local station = findStationByName(stationName, player)
-    if not station then
-      log("player selected unknown station "..event.element.caption)
-      player.print{"error.unknownStation"}
+  local station = findStationByName(stationName, player)
+  if not station then
+    log("player selected unknown station "..stationName)
+    player.print{"error.unknownStation"}
+    return
+  end
+
+  if controlsShuttleTrain(player) then
+    local train = player.vehicle.train
+    if train.station and train.station.backer_name == stationName then
+      player.print{"info.alreadyThere", stationRef(station)}
       return
     end
-
-    if controlsShuttleTrain(player) then
-      local train = player.vehicle.train
-      if train.station and train.station.backer_name == stationName then
-        player.print{"info.alreadyThere", stationRef(station)}
-        return
-      end
-      transportTo(train, player, station)
-      closeDialog(player)
-    elseif not player.vehicle or not player.vehicle.train then
-      callShuttleTrain(player, station)
-      closeDialog(player)
-    end
+    updateHistory(player, stationName)
+    transportTo(train, player, station)
+    closeDialog(player)
+  elseif not player.vehicle or not player.vehicle.train then
+    callShuttleTrain(player, station)
+    closeDialog(player)
+  end
 end
 

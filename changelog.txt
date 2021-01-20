@@ -1,4 +1,24 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.8
+Date: 2021-01-20
+  New features:
+    - Added a map option to ignore trains in manual mode when searching for a shuttle train.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.7
+Date: 2021-01-17
+  Bugfix:
+    - Ensure that the station selection dialog's position is persistent.
+  New features:
+    - Store the pickup station in the history when a shuttle train is called.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.6
+Date: 2021-01-16
+  New features:
+    - Added a new category that shows the history of the last visited stations.
+    - The currently active category in the station selection dialog is now highlighted.
+    - The category that is shown, when the station selection dialog is opened, can now be configured
+      in the player mod settings.
+---------------------------------------------------------------------------------------------------
 Version: 1.0.5
 Date: 2021-01-13
   New features:

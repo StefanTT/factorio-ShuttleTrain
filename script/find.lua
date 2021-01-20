@@ -20,8 +20,12 @@ function findShuttleTrainFor(player)
   local matchDistance = nil
   local match = nil
 
+  local ignoreManual = settings.global['shuttle-train-global-ignore-manual-trains'].value
+
 	for _,train in next, player.force.get_trains(player.surface) do
-    if available[train.state] and #train.passengers == 0 and isShuttleTrain(train) then
+    if available[train.state] and #train.passengers == 0 and isShuttleTrain(train) and
+      (not ignoreManual or train.state ~= defines.train_state.manual_control) then
+
       local distance = (train.front_stock.position.x - px) ^ 2 + (train.front_stock.position.y - py) ^ 2
       if not matchDistance or distance < matchDistance then
         matchDistance = distance

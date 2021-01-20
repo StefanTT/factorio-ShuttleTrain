@@ -17,6 +17,12 @@ data:extend({
 		allow_blank = false,
 	},
 	{
+		type = "bool-setting",
+		name = "shuttle-train-global-ignore-manual-trains",
+		setting_type = "runtime-global",
+		default_value = false
+	},
+	{
 		type = "string-setting",
 		name = "shuttle-train-exit-action",
 		setting_type = "runtime-per-user",
@@ -72,5 +78,12 @@ data:extend({
     setting_type = "runtime-per-user",
     default_value = false
   },
+	{
+		type = "string-setting",
+		name = "shuttle-train-dialog-default",
+		setting_type = "runtime-per-user",
+		default_value = "all",
+		allowed_values = { "all", "history", "last"}, 
+	},
 })
 
