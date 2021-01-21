@@ -85,5 +85,17 @@ data:extend({
 		default_value = "all",
 		allowed_values = { "all", "history", "last"}, 
 	},
+	{
+		type = "bool-setting",
+		name = "shuttle-train-search-ignore-items",
+		setting_type = "runtime-per-user",
+		default_value = true
+	},
+	{
+		type = "bool-setting",
+		name = "shuttle-train-dot-to-go",
+		setting_type = "runtime-per-user",
+		default_value = false
+	},
 })
 

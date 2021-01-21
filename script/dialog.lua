@@ -142,6 +142,33 @@ end
 
 
 --
+-- Test if the station name matches the filter string.
+--
+-- @param name The name of the station
+-- @param search The search string
+-- @param ignoreItems True to ignore items in station names
+-- @return True if the station name matches the search string, false if not
+--
+local function matchesFilter(name, search, ignoreItems)
+  name = name:lower()
+  local nameWithoutItems = name:gsub("%[item=[^%]]*%]", "")
+
+  if ignoreItems then name = nameWithoutItems end
+
+  -- test if the station name contains the search string 
+  if string.find(name, search, 1, true) then return true end
+
+  -- test if the letters of the search string match the words of the station
+  local pattern = ""
+  for i = 1,search:len() do
+    pattern = pattern..search:sub(i, i)..".*%s+"
+  end
+  pattern = pattern:gsub("%%s%+$", "")
+  return nameWithoutItems:match(pattern) ~= nil
+end
+
+
+--
 -- Update the list of stations in the dialog.
 --
 -- @param player The LuaPlayer to update for
@@ -192,11 +219,13 @@ function updateStationsDialog(player)
     filterCategory = nil
   end
 
+  local ignoreItems = settings.get_player_settings(player)["shuttle-train-search-ignore-items"].value
+
   idx = 1
   local btn
   for _,name in pairs(stationNames) do
-    if (search == "" or string.find(name:lower(), search, 1, true)) and
-       (not filterCategory or string.find(name, filterCategory, 1, true) == 1) then
+    if (search ~= "" and matchesFilter(name, search, ignoreItems)) or
+       (search == "" and (not filterCategory or string.find(name, filterCategory, 1, true) == 1)) then
 
       createCategoryButton(stationsTable, idx, categories[idx], categories[idx] == selectedCategory)
 
@@ -212,5 +241,25 @@ function updateStationsDialog(player)
     stationsTable.add{type = "label", name = DIALOG_STATION_PREFIX..idx, caption = " "}
     idx = idx + 1
   end
+end
+
+
+--
+--  Get the name of the first station in the station list.
+--
+--  @param player The LuaPlayer to get the station for
+--  @return The name of the topmost station, nil if none
+--
+function getTopDialogStation(player)
+  local dialog = player.gui.screen[DIALOG_NAME]
+  if not dialog or not dialog.visible then return nil end
+
+  local stationsTable = dialog.stationsPane.stationsTable
+  if not stationsTable then return nil end
+
+  local station = stationsTable[DIALOG_STATION_PREFIX.."1"]
+  if station then return station.caption end
+  
+  return nil
 end
 

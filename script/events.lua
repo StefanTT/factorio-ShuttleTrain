@@ -183,6 +183,16 @@ end
 --
 function onGuiTextChanged(event)
   if event.element.name == DIALOG_SEARCH then
+    if event.text:sub(-1) == "." then
+      local player = game.players[event.player_index]
+      if player and settings.get_player_settings(player)["shuttle-train-dot-to-go"].value then
+        local stationName = getTopDialogStation(player)
+        if stationName then
+          playerClickedStation(player, stationName)
+          return
+        end
+      end
+    end
     updateStationsDialog(game.players[event.player_index])
   end
 end

@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.9
+Date: 2021-01-21
+  New features:
+    - The station search field now understands when you type in the first letter of every word
+      of a station. E.g. "mhs" will find "My Home Station".
+    - When entering a string in the station search field all stations that are displayed in
+      the "..." (all) category are searched.
+    - A per-player mod setting now allows to ignore icon item names when searching. As my feeling
+      is that this is what most players want it is activated by default initially.
+    - A per-player mod setting enables that when entering a dot "." in the search field then the
+      train is sent to the top station in the list. This option is disabled by default.
+---------------------------------------------------------------------------------------------------
 Version: 1.0.8
 Date: 2021-01-20
   New features:
