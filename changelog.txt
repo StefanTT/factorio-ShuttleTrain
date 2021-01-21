@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.10
+Date: 2021-01-21
+  New features:
+    - Show the "all stations" category "..." as selected while a text is entered into the search field
+      to indicate that the search happens in within all stations.
+  Bugfix:
+    - Escape lua pattern special characters in station search dialog to avoid strange results.
+    - Corrected filtering-out icon names when searching.
+---------------------------------------------------------------------------------------------------
 Version: 1.0.9
 Date: 2021-01-21
   New features:

@@ -151,8 +151,8 @@ end
 --
 local function matchesFilter(name, search, ignoreItems)
   name = name:lower()
-  local nameWithoutItems = name:gsub("%[item=[^%]]*%]", "")
-
+  local nameWithoutItems = name:gsub("%[[%-%a]+=[^%]]+%]", "")
+  --log("filter match: name:"..name.." nameWithoutItems:"..nameWithoutItems)
   if ignoreItems then name = nameWithoutItems end
 
   -- test if the station name contains the search string 
@@ -161,9 +161,10 @@ local function matchesFilter(name, search, ignoreItems)
   -- test if the letters of the search string match the words of the station
   local pattern = ""
   for i = 1,search:len() do
-    pattern = pattern..search:sub(i, i)..".*%s+"
+    pattern = pattern..search:sub(i, i):gsub("([%(%)%.%%%+%-%*%?%[%^%$])", "%%%1")..".*%s+"
   end
   pattern = pattern:gsub("%%s%+$", "")
+  --log("  pattern:"..pattern)
   return nameWithoutItems:match(pattern) ~= nil
 end
 
@@ -214,7 +215,9 @@ function updateStationsDialog(player)
     end
   end
 
-  if selectedCategory == DIALOG_CATEGORY_HISTORY then
+  if search ~= "" then
+    selectedCategory = DIALOG_CATEGORY_ALL
+  elseif selectedCategory == DIALOG_CATEGORY_HISTORY then
     stationNames = global.history[player.index] or {}
     filterCategory = nil
   end
