@@ -81,7 +81,7 @@ function findPickupStationFor(player)
   local match = nil
   local range = SEARCH_RANGE
 
-  local filterFunc = createStationFilter(player)
+  local filterFunc = createStationExcludeFilter(player)
 
   local stations = player.surface.find_entities_filtered({type = "train-stop", force = player.force,
     area = {{x = px - range, y = py - range}, {x = px + range, y = py + range}} })
@@ -139,6 +139,31 @@ function findStationByName(name, player)
   for _,station in ipairs(stations) do
     if station.backer_name == name then
       return station
+    end
+  end
+  return nil
+end
+
+
+--
+-- Find the first difference in the two given lists of train schedule records.
+--
+-- @param oldRecs The old records
+-- @param newRecs The new records
+-- @return The first entry of newRecs that is different from the entry in oldRecs with the same index, nil if none
+--
+function findChangedScheduleRecord(oldRecs, newRecs)
+  for i = 1,math.max(#oldRecs, #newRecs) do
+    if i > #oldRecs then
+      return newRecs[i]
+    elseif i > #newRecs then
+      return nil
+    else
+      local oldRec = oldRecs[i]
+      local newRec = newRecs[i]
+      if oldRec ~= newRec.station and oldRec ~= newRec.rail then
+        return newRec
+      end
     end
   end
   return nil

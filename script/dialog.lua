@@ -142,34 +142,6 @@ end
 
 
 --
--- Test if the station name matches the filter string.
---
--- @param name The name of the station
--- @param search The search string
--- @param ignoreItems True to ignore items in station names
--- @return True if the station name matches the search string, false if not
---
-local function matchesFilter(name, search, ignoreItems)
-  name = name:lower()
-  local nameWithoutItems = name:gsub("%[[%-%a]+=[^%]]+%]", "")
-  --log("filter match: name:"..name.." nameWithoutItems:"..nameWithoutItems)
-  if ignoreItems then name = nameWithoutItems end
-
-  -- test if the station name contains the search string 
-  if string.find(name, search, 1, true) then return true end
-
-  -- test if the letters of the search string match the words of the station
-  local pattern = ""
-  for i = 1,search:len() do
-    pattern = pattern..search:sub(i, i):gsub("([%(%)%.%%%+%-%*%?%[%^%$])", "%%%1")..".*%s+"
-  end
-  pattern = pattern:gsub("%%s%+$", "")
-  --log("  pattern:"..pattern)
-  return nameWithoutItems:match(pattern) ~= nil
-end
-
-
---
 -- Update the list of stations in the dialog.
 --
 -- @param player The LuaPlayer to update for
@@ -182,7 +154,7 @@ function updateStationsDialog(player)
   if dialog.stationsPane.stationsTable then dialog.stationsPane.stationsTable.destroy() end
 
   local stationsTable = dialog.stationsPane.add{type = "table", name = "stationsTable", column_count = 2, vertical_centering = false }
-  local filterFunc = createStationFilter(player)
+  local stationFilterFunc = createStationExcludeFilter(player)
 
   local stations = player.surface.find_entities_filtered({type = "train-stop", force = player.force})
   local comp = function(a,b)
@@ -193,7 +165,7 @@ function updateStationsDialog(player)
   local lastName
   for _,station in sortedPairs(stations, comp) do
     local name = station.backer_name:lower()
-    if name ~= lastName and not filterFunc(name) then
+    if name ~= lastName and not stationFilterFunc(name) then
       table.insert(stationNames, station.backer_name)
       lastName = name
     end
@@ -222,12 +194,12 @@ function updateStationsDialog(player)
     filterCategory = nil
   end
 
-  local ignoreItems = settings.get_player_settings(player)["shuttle-train-search-ignore-items"].value
+  local searchFilterFunc = createSearchFilter(player, search)
 
   idx = 1
   local btn
   for _,name in pairs(stationNames) do
-    if (search ~= "" and matchesFilter(name, search, ignoreItems)) or
+    if (search ~= "" and searchFilterFunc(name)) or
        (search == "" and (not filterCategory or string.find(name, filterCategory, 1, true) == 1)) then
 
       createCategoryButton(stationsTable, idx, categories[idx], categories[idx] == selectedCategory)

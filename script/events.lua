@@ -40,6 +40,22 @@ end
 
 
 --
+-- Called when a trains schedule is changed either by the player or through script.
+--
+-- @param event The event containing:
+--        train :: LuaTrain
+--        player_index :: uint (optional): The player who made the change if any
+--
+function onTrainScheduleChanged(event)
+  if event.player_index and (global.playerTrain[event.player_index] or {}).id == event.train.id then
+    local player = game.players[event.player_index]
+    playerChangedTrainSchedule(player, event.train)
+    global.playerTrain[event.player_index] = nil
+  end
+end
+
+
+--
 -- Called when a train changes status (started to stopped and vice versa).
 --
 -- @param event The event containing
@@ -54,7 +70,7 @@ local function onTrainChangedStatus(event)
   -- Close the station selection dialog when the train is switched to manual control
   if train.state == defines.train_state.manual_control then
     for _,player in pairs(game.players) do
-      if controlsShuttleTrain(player) and player.vehicle.train == event.train then
+      if controlsThisShuttleTrain(player, event.train) then
         closeDialog(player)
       end
     end
@@ -127,7 +143,7 @@ end
 
 
 --
---  Called when the player opens a GUI.
+-- Called when the player opens a GUI.
 --
 -- @param event The event containing:
 --        player_index :: uint: The player
@@ -139,12 +155,40 @@ end
 --        element :: LuaGuiElement (optional): The custom GUI element that was opened
 --
 function onGuiOpened(event)
-  -- Close the station selection dialog when the player opens a locomotive of the train he is sitting in
+  -- Close the station selection dialog when the player opens a locomotive of the train he is sitting in.
+  -- Also store the train's schedule to detect when the player changes the train's schedule.
   if event.gui_type == defines.gui_type.entity then
     local player = game.players[event.player_index]
-    if event.entity.train and player and player.vehicle and player.vehicle.train == event.entity.train then
-      closeDialog(player)
+    if player and event.entity.train and isShuttleTrain(event.entity.train) then
+      local records = (event.entity.train.schedule or {}).records or {}
+      log("Storing shuttle train schedule for player "..player.name)
+      global.playerTrain[event.player_index] = {id = event.entity.train.id, schedule = copyTrainScheduleRecordTargets(records)}
+      if player.vehicle and player.vehicle.train == event.entity.train then
+        closeDialog(player)
+      end
     end
+  end
+end
+
+
+--
+-- Called when the player closes the GUI they have open.
+--
+-- @param event The event containing:
+--        player_index :: uint: The player
+--        gui_type :: defines.gui_type: The GUI type that was open
+--        entity :: LuaEntity (optional): The entity that was open
+--        item :: LuaItemStack (optional): The item that was open
+--        equipment :: LuaEquipment (optional): The equipment that was open
+--        other_player :: LuaPlayer (optional): The other player that was open
+--        element :: LuaGuiElement (optional): The custom GUI element that was open
+--        technology :: LuaTechnology (optional): The technology that was automatically selected when opening the research GUI
+--        tile_position :: TilePosition (optional): The tile position that was open
+--
+function onGuiClosed(event)
+  if event.gui_type == defines.gui_type.entity and event.player_index and event.entity.train then
+      log("Clearing shuttle train schedule of player "..game.players[event.player_index].name)
+    global.playerTrain[event.player_index] = nil
   end
 end
 
@@ -199,18 +243,66 @@ end
 
 
 --
+-- Called after an entity has been renamed either by the player or through script.
+--
+-- @param event The event containing
+--        player_index :: uint (optional): If by_script is true this will not be included.
+--        by_script :: boolean
+--        entity :: LuaEntity
+--        old_name :: string
+--
+function onEntityRenamed(event)
+  if event.entity.type == "train-stop" then
+    for _,history in pairs(global.history) do
+      for i = 1,#history do
+        if history[i] == event.old_name then
+          history[i] = event.entity.backer_name
+        end
+      end
+    end
+  end
+end
+
+
+--
+-- Called when an entity has been removed or has been destroyed.
+--
+-- @param event The event containing
+--        entity :: LuaEntity
+--
+function onEntityRemoved(event)
+  if event.entity.type == "train-stop" then
+    local name = event.entity.backer_name
+    for _,history in pairs(global.history) do
+      for i = #history,1,-1 do
+        if history[i] == name then
+          table.remove(history, i)
+        end
+      end
+    end
+  end
+end
+
+
+--
 -- Register the event callbacks.
 --
 function registerEvents()
   log("registering events")
   script.on_event(defines.events.on_player_driving_changed_state, onPlayerDrivingChangedState)
   script.on_event(defines.events.on_train_changed_state, onTrainChangedStatus)
+  script.on_event(defines.events.on_train_schedule_changed, onTrainScheduleChanged)
   script.on_event(defines.events.on_lua_shortcut, onShortcut)
   script.on_event("call-shuttle-train", onCallShuttleTrain)
   script.on_event("send-shuttle-train-to-depot", onSendShuttleTrainToDepot)
   script.on_event(defines.events.on_gui_opened, onGuiOpened)
+  script.on_event(defines.events.on_gui_closed, onGuiClosed)
   script.on_event(defines.events.on_gui_click, onGuiClick)
   script.on_event(defines.events.on_gui_text_changed, onGuiTextChanged)
+  script.on_event(defines.events.on_entity_renamed, onEntityRenamed)
+  script.on_event(defines.events.on_entity_died, onEntityRemoved)
+  script.on_event(defines.events.on_pre_player_mined_item, onEntityRemoved)
+  script.on_event(defines.events.on_robot_mined_entity, onEntityRemoved)
 end
 
 

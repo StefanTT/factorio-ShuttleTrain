@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.11
+Date: 2021-01-26
+  New features:
+    - Smart handling of manual destination selection: if enabled and you shift-click or control-click
+      select a destination for a shuttle train then the train drives there with the same schedule
+      logic as if you selected the station from the station selection dialog.
+    - Added another station search pattern: "ho sta" will now find "My Home Station"
+      (but "my sta" will not find it).
+    - Added an option to invert the station name filter.
+    - Update station history when a station is being renamed or removed.
+    - Ordered mod settings options.
+---------------------------------------------------------------------------------------------------
 Version: 1.0.10
 Date: 2021-01-21
   New features:

@@ -161,3 +161,22 @@ function strSplit(str, sep)
   return result
 end
 
+
+--
+-- Make a simple copy of the targets of a train schedule
+--
+-- @param records The train schedule records to copy
+-- @return A table with the station names / rail entities of the schedule
+--
+function copyTrainScheduleRecordTargets(records)
+  local result = {}
+  for _,record in pairs(records) do
+    if record.station then
+      table.insert(result, record.station)
+    elseif record.rail then
+      table.insert(result, record.rail)
+    end
+  end
+  return result
+end
+

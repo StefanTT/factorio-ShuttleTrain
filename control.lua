@@ -28,12 +28,18 @@ function initGlobalVariables()
   global.trackedTrains = global.trackedTrains or {}
 
   -- The selected station category
-  -- Key is the LuaPlayer::id, value is the name of the category
+  -- Key is the LuaPlayer::id, value is the name of the category.
   global.selectedCategory = global.selectedCategory or {}
 
-  -- The history of the selected stations per player
-  -- Key is the LuaPlayer::id, value is a list of the selected stations
+  -- The history of the selected stations per player.
+  -- Key is the LuaPlayer::id, value is a list of the selected stations.
   global.history = global.history or {}
+
+  -- The schedule of the train the player is currently configuring.
+  -- Key is the LuaPlayer::id, value is a structure with:
+  --   id The ID of the LuaTrain
+  --   schedule The train's schedule records
+  global.playerTrain = global.playerTrain or {}
 end
 
 
@@ -113,6 +119,7 @@ function playerClickedStation(player, stationName)
   end
 
   if controlsShuttleTrain(player) then
+    global.playerTrain[player.index] = nil
     local train = player.vehicle.train
     if train.station and train.station.backer_name == stationName then
       player.print{"info.alreadyThere", stationRef(station)}
@@ -127,4 +134,37 @@ function playerClickedStation(player, stationName)
   end
 end
 
+
+--
+-- Called when a player manually changed the schedule of a shuttle train.
+--
+-- @param player The LuaPlayer who did the change
+-- @param train The LuaTrain that was changed
+--
+function playerChangedTrainSchedule(player, train)
+  if not settings.get_player_settings(player)["shuttle-train-smart-manual-destinations"].value then
+    return
+  end
+
+  local playerTrainInfo = global.playerTrain[player.index] or {}
+  log("player "..player.name.." manually changed schedule of shuttle train #"..tostring(playerTrainInfo.id))
+
+  local oldRecs = playerTrainInfo.schedule or {}
+  local dest = findChangedScheduleRecord(oldRecs, (train.schedule or {}).records or {})
+
+  if not dest then
+    log("no new train schedule record was added")
+    return
+  elseif dest.station then
+    dest = findStationByName(dest.station, player)
+  else
+    dest = dest.rail
+  end
+
+  log("destination "..tostring(dest))
+  transportTo(train, player, dest)
+  if player.opened then
+    player.opened = nil
+  end
+end
 

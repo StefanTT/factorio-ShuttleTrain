@@ -42,3 +42,18 @@ function stationExcludesOf(player)
   return settings.global["shuttle-train-global-exclude"].value or ""
 end
 
+
+--
+-- Get the station exclusion invert flag settings of a player.
+--
+-- @param player The player to get it for
+-- @return The configured value
+--
+function stationExcludesInvertOf(player)
+  local v = settings.get_player_settings(player)["shuttle-train-exclude"].value
+  if v and v ~= "" then
+    return settings.get_player_settings(player)["shuttle-train-exclude-invert"].value
+  end
+  return settings.global["shuttle-train-global-exclude-invert"].value
+end
+

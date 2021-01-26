@@ -44,6 +44,18 @@ end
 
 
 --
+-- Test if the given player controls the given shuttle train.
+--
+-- @param player The LuaPlayer to test
+-- @param train The LuaTrain that the player is expected to control
+-- @return True if the player controls the train and the train is a shuttle train, false otherwise
+--
+function controlsThisShuttleTrain(player, train)
+  return controlsShuttleTrain(player) and player.vehicle.train == train
+end
+
+
+--
 -- Create a train schedule record for a destination station or rail with optional wait conditions.
 --
 -- @param destination The LuaEntity of the destination station or rail segment
@@ -142,12 +154,12 @@ end
 --
 -- @param train The LuaTrain to use
 -- @param player The LuaPlayer that initiated it
--- @param destination The LuaEntity of the destination station
+-- @param destination The LuaEntity of the destination station or destination rail
 --
 function transportTo(train, player, destination)
   if not destination.valid then return end
 
-  log("transport via shuttle train "..train.front_stock.backer_name.." to "..destination.backer_name.." for "..player.name)
+  log("transport via shuttle train "..train.front_stock.backer_name.." to "..(destination.backer_name or "rail").." for "..player.name)
   train.manual_mode = true
 
   local exitAction = exitActionOf(player)
@@ -158,16 +170,14 @@ function transportTo(train, player, destination)
   end
 
   if exitAction == "Depot" and depotName ~= "" then
-    train.schedule = { current = 1, records = {
-      {rail = destination.connected_rail, temporary = true, wait_conditions = {
-        {type = "passenger_not_present", compare_type = "and"}}},
-      {station = destination.backer_name, wait_conditions = {
+    train.schedule = {current = 1, records = {
+      createScheduleRecord(destination, {
         {type = "passenger_not_present", compare_type = "and"},
-        {type = "time", compare_type = "and", ticks = 180}}},
+        {type = "time", compare_type = "and", ticks = 180}}),
       {station = depotName, wait_conditions = {{type = "circuit", compare_type = "and"}}}
     }}
   else
-    train.schedule = { current = 1, records = {{station = destination.backer_name}}}
+    train.schedule = {current = 1, records = {createScheduleRecord(destination)}}
   end
 
   train.manual_mode = false
@@ -246,7 +256,7 @@ end
 
 
 --
--- Begin tracking a train
+-- Begin tracking a train.
 --
 -- @param train The LuaTrain to track
 -- @param player The controlling player
