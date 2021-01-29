@@ -24,6 +24,9 @@ local function onPlayerDrivingChangedState(event)
   if player.vehicle then
     if controlsShuttleTrain(player) then
       log("player "..player.name.." entered shuttle train "..player.vehicle.train.front_stock.backer_name)
+      local records = (event.entity.train.schedule or {}).records or {}
+      log("Storing shuttle train schedule for player "..player.name)
+      global.playerTrain[event.player_index] = {id = event.entity.train.id, schedule = copyTrainScheduleRecordTargets(records)}
       openDialog(player)
     end
   else
@@ -160,9 +163,6 @@ function onGuiOpened(event)
   if event.gui_type == defines.gui_type.entity then
     local player = game.players[event.player_index]
     if player and event.entity.train and isShuttleTrain(event.entity.train) then
-      local records = (event.entity.train.schedule or {}).records or {}
-      log("Storing shuttle train schedule for player "..player.name)
-      global.playerTrain[event.player_index] = {id = event.entity.train.id, schedule = copyTrainScheduleRecordTargets(records)}
       if player.vehicle and player.vehicle.train == event.entity.train then
         closeDialog(player)
       end
