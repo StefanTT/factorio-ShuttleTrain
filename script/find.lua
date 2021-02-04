@@ -23,7 +23,7 @@ function findShuttleTrainFor(player)
   local ignoreManual = settings.global['shuttle-train-global-ignore-manual-trains'].value
 
 	for _,train in next, player.force.get_trains(player.surface) do
-    if available[train.state] and #train.passengers == 0 and isShuttleTrain(train) and
+    if available[train.state] and #train.passengers == 0 and isAutomaticShuttleTrain(train) and
       (not ignoreManual or train.state ~= defines.train_state.manual_control) then
 
       local distance = (train.front_stock.position.x - px) ^ 2 + (train.front_stock.position.y - py) ^ 2
@@ -56,7 +56,7 @@ function findNearbyShuttleTrain(player)
 
 	for _,loco in ipairs(locos) do
 	  local train = loco.train
-    if available[train.state] and isShuttleTrain(train) then
+    if available[train.state] and isAnyShuttleTrain(train) then
       local distance = (train.front_stock.position.x - px) ^ 2 + (train.front_stock.position.y - py) ^ 2
       if not matchDistance or distance < matchDistance then
         matchDistance = distance

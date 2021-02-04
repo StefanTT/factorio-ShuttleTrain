@@ -10,17 +10,39 @@ local untrack = {
 
 
 --
--- Test if the train is a shuttle train.
+-- Test if the train is an automatic shuttle train.
 --
 -- @param train The train to test
 -- @return true if the train is a shuttle train
 --
-function isShuttleTrain(train)
+function isAutomaticShuttleTrain(train)
   if not train.id or not train.front_stock or train.front_stock.type ~= "locomotive" then return false end
   local locomotive = train.front_stock
 	if locomotive.valid and locomotive.grid and locomotive.grid.equipment then
 		for _, equipment in pairs(locomotive.grid.equipment) do
-			if equipment.name == NAME then return true end
+			if equipment.name == AUTOMATIC_NAME then
+			  return true
+			end
+		end
+	end
+	return false
+end
+
+
+--
+-- Test if the train is an automatic or a manual shuttle train.
+--
+-- @param train The train to test
+-- @return true if the train is a shuttle train
+--
+function isAnyShuttleTrain(train)
+  if not train.id or not train.front_stock or train.front_stock.type ~= "locomotive" then return false end
+  local locomotive = train.front_stock
+	if locomotive.valid and locomotive.grid and locomotive.grid.equipment then
+		for _, equipment in pairs(locomotive.grid.equipment) do
+			if equipment.name == AUTOMATIC_NAME or equipment.name == MANUAL_NAME then
+			  return true
+			end
 		end
 	end
 	return false
@@ -37,7 +59,7 @@ end
 function controlsShuttleTrain(player)
   local vehicle = player.vehicle
   if vehicle and vehicle.valid and vehicle.train and vehicle.type == "locomotive" then
-    return isShuttleTrain(vehicle.train)
+    return isAnyShuttleTrain(vehicle.train)
   end
   return false
 end

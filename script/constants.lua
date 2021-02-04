@@ -2,8 +2,11 @@
 -- See LICENSE.md in the project directory for license information.
 
 
--- The name of the item / equipment
-NAME = "shuttle-train"
+-- The name of the automatic item / equipment
+AUTOMATIC_NAME = "shuttle-train"
+
+-- The name of the manual item / equipment
+MANUAL_NAME = "shuttle-train-manual"
 
 -- The range when searching for shuttle trains / stations
 SEARCH_RANGE = 16

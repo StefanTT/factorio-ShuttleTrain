@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.12
+Date: 2021-02-03
+  New features:
+    - Added an equipment item that will allow to control the shuttle train but the train will not
+      respond to calls. This is great for specialized trains like builders or artillery trains.
+    - Changed equipment grid icons
+---------------------------------------------------------------------------------------------------
 Version: 1.0.11
 Date: 2021-01-26
   New features:
