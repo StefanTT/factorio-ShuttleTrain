@@ -303,6 +303,8 @@ function registerEvents()
   script.on_event(defines.events.on_entity_died, onEntityRemoved)
   script.on_event(defines.events.on_pre_player_mined_item, onEntityRemoved)
   script.on_event(defines.events.on_robot_mined_entity, onEntityRemoved)
+  script.on_nth_tick(nil)
+  script.on_nth_tick(617, onTrackedTrainControlTimer)
 end
 
 

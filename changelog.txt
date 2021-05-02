@@ -1,5 +1,20 @@
 ---------------------------------------------------------------------------------------------------
-Version: 1.0.12
+Version: 1.1.2
+Date: 2021-05-01
+  New feature:
+    - When the station starts with an icon then ignore this icon when searching for a station.
+      Previously it was only possible to ignore all icons in the station names or none (via a
+      settings option).
+  Bugfix:
+    - Added missing labels for key bindings.
+---------------------------------------------------------------------------------------------------
+Version: 1.1.1
+Date: 2021-05-01
+  Bugfix:
+    - Work around connection issue in multiplayer when the first player that enters the game
+      logged out while riding a shuttle train.
+---------------------------------------------------------------------------------------------------
+Version: 1.1.0
 Date: 2021-02-03
   New features:
     - Added an equipment item that will allow to control the shuttle train but the train will not

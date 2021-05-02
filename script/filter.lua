@@ -63,7 +63,12 @@ function createSearchFilter(player, search)
     name = name:lower()
 
     local nameWithoutItems = name:gsub("%[[%-%a]+=[^%]]+%]", "")
-    if ignoreItems then name = nameWithoutItems end
+    if ignoreItems then
+      name = nameWithoutItems
+    else
+      -- only remove category item (if present)
+      name = name:gsub("^%[[%-%a]+=[^%]]+%]", "")
+    end
 
     if string.find(name, search, 1, true) then
       return true

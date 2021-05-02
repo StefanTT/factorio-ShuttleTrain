@@ -211,7 +211,7 @@ end
 -- Control all tracked trains.
 --
 function onTrackedTrainControlTimer()
-  log("control tracked trains")
+  --log("control tracked trains")
   for id,track in pairs(global.trackedTrains) do
     local train = track.train
     if not train.valid or untrack[train.state] then
@@ -286,12 +286,6 @@ end
 -- @param status The tracking status of the train
 --
 function trackTrain(train, player, destination, status)
-  if not next(global.trackedTrains) then
-    log("registering timer for train tracking")
-    script.on_nth_tick(nil)
-    script.on_nth_tick(617, onTrackedTrainControlTimer)
-  end
-
   log("start tracking train #"..train.id)
   global.trackedTrains[train.id] = { train = train, player = player, status = status,
     destinationName = destination.backer_name, timeout = game.tick + TRACK_TIMEOUT}
@@ -308,10 +302,5 @@ function untrackTrain(train, id)
   if not id then id = train.id end
   global.trackedTrains[id] = nil
   log("stop tracking train #"..id)
-
-  if not next(global.trackedTrains) then
-    log("unregistering timer for train tracking")
-    script.on_nth_tick(nil)
-  end
 end
 
