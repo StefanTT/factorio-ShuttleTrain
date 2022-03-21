@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.3
+Date: 2022-03-21
+  New feature:
+    - Added cargo-ships and rz-K2PersonalTweaks as optional depencency to allow ships to be
+      used as shuttles.
+---------------------------------------------------------------------------------------------------
 Version: 1.1.2
 Date: 2021-05-01
   New feature:

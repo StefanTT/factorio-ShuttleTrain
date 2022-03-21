@@ -1,12 +1,16 @@
 {
   "name": "ShuttleTrainRefresh",
   "title": "Shuttle Train Refresh",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "factorio_version": "1.1",
   "author": "Stefan T",
   "description": "Train management for personal transportation with some new concepts.",
   "homepage": "https://github.com/StefanTT/factorio-ShuttleTrain",
   "license": "MIT",
-  "dependencies": ["base >= 0.18.0"]
+  "dependencies": [
+    "base >= 0.18.0",
+    "(?) cargo-ships",
+    "(?) rz-K2PersonalTweaks"
+   ]
 }
 
