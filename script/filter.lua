@@ -3,7 +3,7 @@
 
 
 --
--- Create a station filter function for a player
+-- Create a station filter function for a player. Resulting function performs case-insensitive filtering.
 --
 -- @param player The LuaPlayer to create the filter for
 -- @return The station filter which returns true if the given string shall be filtered, false if not
@@ -17,6 +17,7 @@ function createStationExcludeFilter(player)
   local invert = stationExcludesInvertOf(player)
 
   return function(name)
+    name = name:lower()
     for _,exclude in ipairs(excludes) do
       local found = string.find(name, exclude, 1, true) ~= nil
       if found ~= invert then
