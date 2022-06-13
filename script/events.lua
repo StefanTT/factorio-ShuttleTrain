@@ -186,10 +186,15 @@ end
 --        tile_position :: TilePosition (optional): The tile position that was open
 --
 function onGuiClosed(event)
-  if event.gui_type == defines.gui_type.entity and event.player_index and event.entity.train then
-      log("Clearing shuttle train schedule of player "..game.players[event.player_index].name)
-    global.playerTrain[event.player_index] = nil
+  local player = game.players[event.player_index]
+
+  if event.gui_type == defines.gui_type.entity and event.entity.train then
+    log("Clearing shuttle train schedule of player " .. player.name)
+    global.playerTrain[player.index] = nil
+  elseif event.gui_type == defines.gui_type.custom and event.element.name == "shuttleTrainDialog" then
+    closeDialog(player)
   end
+
 end
 
 
