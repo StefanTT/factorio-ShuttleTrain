@@ -163,8 +163,5 @@ function playerChangedTrainSchedule(player, train)
 
   log("destination "..tostring(dest))
   transportTo(train, player, dest)
-  if player.opened then
-    player.opened = nil
-  end
 end
 

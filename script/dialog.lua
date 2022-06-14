@@ -18,8 +18,6 @@ function toggleDialog(player)
   else
     openDialog(player)
   end
-
-  player.opened = visible and dialog or nil
 end
 
 
@@ -30,9 +28,15 @@ end
 -- 
 function closeDialog(player)
   local dialog = player.gui.screen[DIALOG_NAME]
+
   if dialog then
     dialog.visible = false
+
+    if player.opened == dialog then
+      player.opened = nil
+    end
   end
+
 end
 
 
@@ -101,6 +105,7 @@ function openDialog(player)
   dialog.style.maximal_height = 90 + guiHeight * 32;
 
   dialog.visible = true
+  player.opened = dialog
 
   if settings.get_player_settings(player)["shuttle-train-focus-search"].value then
     searchField.focus()
