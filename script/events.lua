@@ -191,7 +191,7 @@ function onGuiClosed(event)
   if event.gui_type == defines.gui_type.entity and event.entity.train then
     log("Clearing shuttle train schedule of player " .. player.name)
     global.playerTrain[player.index] = nil
-  elseif event.gui_type == defines.gui_type.custom and event.element.name == "shuttleTrainDialog" then
+  elseif event.gui_type == defines.gui_type.custom and event.element and event.element.name == "shuttleTrainDialog" then
     closeDialog(player)
   end
 

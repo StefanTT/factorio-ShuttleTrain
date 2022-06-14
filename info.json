@@ -1,7 +1,7 @@
 {
   "name": "ShuttleTrainRefresh",
   "title": "Shuttle Train Refresh",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "factorio_version": "1.1",
   "author": "Stefan T",
   "description": "Train management for personal transportation with some new concepts.",
