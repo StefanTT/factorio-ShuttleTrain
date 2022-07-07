@@ -10,7 +10,9 @@
   "dependencies": [
     "base >= 0.18.0",
     "(?) cargo-ships",
-    "(?) rz-K2PersonalTweaks"
+    "(?) rz-K2PersonalTweaks",
+    "(?) FARL",
+    "(?) Automatic_Train_Painter"
    ]
 }
 
