@@ -159,7 +159,7 @@ function onGuiOpened(event)
   -- Also store the train's schedule to detect when the player changes the train's schedule.
   if event.gui_type == defines.gui_type.entity then
     local player = game.players[event.player_index]
-    if player and event.entity.train and isAnyShuttleTrain(event.entity.train) then
+    if player and event.entity and event.entity.train and isAnyShuttleTrain(event.entity.train) then
       local records = (event.entity.train.schedule or {}).records or {}
       log("Storing shuttle train schedule for player "..player.name)
       global.playerTrain[event.player_index] = {id = event.entity.train.id, schedule = copyTrainScheduleRecordTargets(records)}
