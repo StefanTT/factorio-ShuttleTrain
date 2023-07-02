@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.9
+Date: 2023-07-02
+  New feature:
+    - Scroll to the top of the stations dialog when a category is clicked
+  Bugfix:
+    - Fix high category icons where cut off on top and bottom
+---------------------------------------------------------------------------------------------------
 Version: 1.1.8
 Date: 2022-10-24
   Bugfix:

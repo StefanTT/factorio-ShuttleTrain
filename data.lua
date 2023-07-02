@@ -1,6 +1,8 @@
 -- Copyright (c) 2021 StefanT <stt1@gmx.at>
 -- See LICENSE.md in the project directory for license information.
 
+require "styles"
+
 local eq = table.deepcopy(data.raw["solar-panel-equipment"]["solar-panel-equipment"])
 eq.name = "shuttle-train"
 eq.take_result = "shuttle-train"

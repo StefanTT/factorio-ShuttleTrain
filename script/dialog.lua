@@ -124,8 +124,8 @@ end
 
 
 local function createCategoryButton(parent, idx, category, selected)
-  local style = "tool_button"
-  if selected then style = "highlighted_tool_button" end
+  local style = "shuttle_train_tool_button"
+  if selected then style = "shuttle_train_highlighted_tool_button" end
 
   local btn
   if category == DIALOG_CATEGORY_HISTORY then
@@ -154,6 +154,8 @@ end
 function updateStationsDialog(player)
   local dialog = player.gui.screen[DIALOG_NAME]
   if not dialog or not dialog.visible then return end
+
+  dialog.stationsPane.scroll_to_top()
 
   local search = dialog.flowSearch[DIALOG_SEARCH].text:lower()
   if dialog.stationsPane.stationsTable then dialog.stationsPane.stationsTable.destroy() end
