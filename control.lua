@@ -16,7 +16,7 @@ require "script.events"
 -- Initialize the global variables.
 --
 function initGlobalVariables()
-  log("init global variables")
+  log("init storage variables")
 
   -- The shuttle trains that are currently active.
   -- Key is the LuaTrain::id, value is a structure with:
@@ -25,21 +25,21 @@ function initGlobalVariables()
   --   status The control status, see the STATUS_xy constants in constants.lua
   --   destinationName The LuaEntity::backer_name of the destination station
   --   timeout The game.tick time when the train's current action times out
-  global.trackedTrains = global.trackedTrains or {}
+  storage.trackedTrains = storage.trackedTrains or {}
 
   -- The selected station category
   -- Key is the LuaPlayer::id, value is the name of the category.
-  global.selectedCategory = global.selectedCategory or {}
+  storage.selectedCategory = storage.selectedCategory or {}
 
   -- The history of the selected stations per player.
   -- Key is the LuaPlayer::id, value is a list of the selected stations.
-  global.history = global.history or {}
+  storage.history = storage.history or {}
 
   -- The schedule of the train the player is currently configuring.
   -- Key is the LuaPlayer::id, value is a structure with:
   --   id The ID of the LuaTrain
   --   schedule The train's schedule records
-  global.playerTrain = global.playerTrain or {}
+  storage.playerTrain = storage.playerTrain or {}
 end
 
 
@@ -53,12 +53,12 @@ end
 local function updateHistory(player, stationName)
   local history = { stationName }
   local maxEntries = settings.get_player_settings(player)["shuttle-train-gui-height"].value
-  for _,name in pairs(global.history[player.index] or {}) do
+  for _,name in pairs(storage.history[player.index] or {}) do
     if name ~= stationName and #history < maxEntries then
       table.insert(history, name)
     end
   end
-  global.history[player.index] = history
+  storage.history[player.index] = history
 end
 
 
@@ -119,7 +119,7 @@ function playerClickedStation(player, stationName)
   end
 
   if controlsShuttleTrain(player) then
-    global.playerTrain[player.index] = nil
+    storage.playerTrain[player.index] = nil
     local train = player.vehicle.train
     if train.station and train.station.backer_name == stationName then
       player.print{"info.alreadyThere", stationRef(station)}
@@ -146,7 +146,7 @@ function playerChangedTrainSchedule(player, train)
     return
   end
 
-  local playerTrainInfo = global.playerTrain[player.index] or {}
+  local playerTrainInfo = storage.playerTrain[player.index] or {}
   log("player "..player.name.." manually changed schedule of shuttle train #"..tostring(playerTrainInfo.id))
 
   local oldRecs = playerTrainInfo.schedule or {}

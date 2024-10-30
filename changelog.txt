@@ -1,25 +1,42 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.1
+Date: 2024-10-29
+  Bugfixes:
+    - It was not possible to insert the shuttle train item into trains
+  Known bugs:
+    - The close button X is not visible at the moment
+---------------------------------------------------------------------------------------------------
+Version: 2.0.0
+Date: 2024-10-28
+  Changes:
+    - Low effort updated to game version 2.0
+---------------------------------------------------------------------------------------------------
+Version: 1.2.0
+Date: 2023-10-01
+  Bugfixes:
+    - Fixed a potential nullpointer exception when editing the stations during transport
+---------------------------------------------------------------------------------------------------
 Version: 1.1.9
 Date: 2023-07-02
-  New feature:
+  Features:
     - Scroll to the top of the stations dialog when a category is clicked
-  Bugfix:
+  Bugfixes:
     - Fix high category icons where cut off on top and bottom
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.8
 Date: 2022-10-24
-  Bugfix:
+  Bugfixes:
     - Fix crash when opening the interstellar map view of the Space Exploration mod
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.7
 Date: 2022-07-07
-  Bugfix:
+  Bugfixes:
     - Fix issue with shuttle train module not being usable with locomotive equipment grid from
       Automatic Train Painter mod.
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.6
 Date: 2022-06-14
-  Bugfix:
+  Bugfixes:
     - Fix nullpointer exception when using Improved Research Queue.
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.5
@@ -29,12 +46,12 @@ Date: 2022-06-14
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.4
 Date: 2022-06-02
-  Bugfix:
+  Bugfixes:
     - Fix station filtering when calling train to player (by azaghal).
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.3
 Date: 2022-03-21
-  New feature:
+  Features:
     - Added cargo-ships and rz-K2PersonalTweaks as optional depencency to allow ships to be
       used as shuttles.
 ---------------------------------------------------------------------------------------------------
@@ -44,25 +61,25 @@ Date: 2021-05-01
     - When the station starts with an icon then ignore this icon when searching for a station.
       Previously it was only possible to ignore all icons in the station names or none (via a
       settings option).
-  Bugfix:
+  Bugfixes:
     - Added missing labels for key bindings.
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.1
 Date: 2021-05-01
-  Bugfix:
+  Bugfixes:
     - Work around connection issue in multiplayer when the first player that enters the game
       logged out while riding a shuttle train.
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.0
 Date: 2021-02-03
-  New features:
+  Features:
     - Added an equipment item that will allow to control the shuttle train but the train will not
       respond to calls. This is great for specialized trains like builders or artillery trains.
     - Changed equipment grid icons
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.11
 Date: 2021-01-26
-  New features:
+  Features:
     - Smart handling of manual destination selection: if enabled and you shift-click or control-click
       select a destination for a shuttle train then the train drives there with the same schedule
       logic as if you selected the station from the station selection dialog.
@@ -74,16 +91,16 @@ Date: 2021-01-26
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.10
 Date: 2021-01-21
-  New features:
+  Features:
     - Show the "all stations" category "..." as selected while a text is entered into the search field
       to indicate that the search happens in within all stations.
-  Bugfix:
+  Bugfixes:
     - Escape lua pattern special characters in station search dialog to avoid strange results.
     - Corrected filtering-out icon names when searching.
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.9
 Date: 2021-01-21
-  New features:
+  Features:
     - The station search field now understands when you type in the first letter of every word
       of a station. E.g. "mhs" will find "My Home Station".
     - When entering a string in the station search field all stations that are displayed in
@@ -95,19 +112,19 @@ Date: 2021-01-21
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.8
 Date: 2021-01-20
-  New features:
+  Features:
     - Added a map option to ignore trains in manual mode when searching for a shuttle train.
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.7
 Date: 2021-01-17
-  Bugfix:
+  Bugfixes:
     - Ensure that the station selection dialog's position is persistent.
   New features:
     - Store the pickup station in the history when a shuttle train is called.
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.6
 Date: 2021-01-16
-  New features:
+  Features:
     - Added a new category that shows the history of the last visited stations.
     - The currently active category in the station selection dialog is now highlighted.
     - The category that is shown, when the station selection dialog is opened, can now be configured
@@ -115,40 +132,36 @@ Date: 2021-01-16
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.5
 Date: 2021-01-13
-  New features:
+  Features:
     - Close station selection dialog when the shuttle train the player is riding is switched to
       manual control.
     - Close station selection dialog when the player opens a locomotive of the shuttle train he
       is riding.
-  Bugfix:
+  Bugfixes:
     - Fix / cleanup info chat messages and make them more robust.
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.4
 Date: 2021-01-12
-  New feature:
+  Features:
     - Improved info chat messages (thanks to DeviousNull for the patch).
-  Bugfix:
+  Bugfixes:
     - Avoid crash when requesting a shuttle train while standing next to a train station that
       has no rails.
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.3
 Date: 2021-01-12
-  Bugfix:
+  Bugfixes:
     - Avoid problems when transporting to a destination where multiple stations with the
       same name exist by using a temporary stop for the first destination.
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.2
 Date: 2021-01-12
-  New feature:
+  Features:
     - Ensure the station next to the player is used for pickup if multiple stations
       with the same name exist (thanks to DeviousNull for the patch).
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.1
 Date: 2021-01-10
-  Bugfix:
+  Bugfixes:
     - Fixed crash when a called shuttle train is destroyed.
----------------------------------------------------------------------------------------------------
-Version: 1.0.0
-Date: 2021-01-08
-  First release.
 

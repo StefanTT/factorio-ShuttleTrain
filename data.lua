@@ -22,7 +22,7 @@ eq.sprite.filename = "__ShuttleTrainRefresh__/graphics/equipment-manual.png"
 
 
 data:extend({
-  {
+    {
 		type = "equipment-category",
 		name = "shuttle-train"
 	},
@@ -39,11 +39,11 @@ data:extend({
 		enabled = false,
 		energy_required = 10,
 		ingredients = {
-			{"electronic-circuit", 10},
-			{"iron-gear-wheel", 40},
-			{"steel-plate", 20},
+			{type="item", name="electronic-circuit", amount=10},
+			{type="item", name="iron-gear-wheel", amount=40},
+			{type="item", name="steel-plate", amount=20},
 		},
-		result = "shuttle-train"
+		results = {{type="item", name="shuttle-train", amount=1}}
 	},
   {
 		type = "recipe",
@@ -51,18 +51,18 @@ data:extend({
 		enabled = false,
 		energy_required = 10,
 		ingredients = {
-			{"electronic-circuit", 10},
-			{"iron-gear-wheel", 40},
-			{"steel-plate", 20},
+			{type="item", name="electronic-circuit", amount=10},
+			{type="item", name="iron-gear-wheel", amount=40},
+			{type="item", name="steel-plate", amount=20},
 		},
-		result = "shuttle-train-manual"
+		results = {{type="item", name="shuttle-train-manual", amount=1}}
 	},
   {
 		type = "item",
 		name = "shuttle-train",
 		icon = "__ShuttleTrainRefresh__/graphics/equipment.png",
 		icon_size = 64,
-		placed_as_equipment_result = "shuttle-train",
+		place_as_equipment_result = "shuttle-train",
 		subgroup = "equipment",
 		order = "f[shuttle]-a[shuttle-train]",
 		stack_size = 10,
@@ -72,7 +72,7 @@ data:extend({
 		name = "shuttle-train-manual",
 		icon = "__ShuttleTrainRefresh__/graphics/equipment-manual.png",
 		icon_size = 64,
-		placed_as_equipment_result = "shuttle-train-manual",
+		place_as_equipment_result = "shuttle-train-manual",
 		subgroup = "equipment",
 		order = "f[shuttle]-a[shuttle-train-manual]",
 		stack_size = 10,
@@ -123,31 +123,14 @@ data:extend({
   },
   {
     type = "shortcut",
-    action = "lua",
     name = "shuttle-train-shortcut",
     order = "m[shuttle-train]",
+    action = "lua",
     toggleable = false,
-    icon = {
-      filename = "__ShuttleTrainRefresh__/graphics/tool-button.png",
-      flags = {"icon"},
-      priority = "extra-high-no-scale",
-      scale = 1,
-      size = 32
-    },
-    small_icon = {
-      filename = "__ShuttleTrainRefresh__/graphics/tool-button.png",
-      flags = {"icon"},
-      priority = "extra-high-no-scale",
-      scale = 1,
-      size = 24
-    },
-    disabled_small_icon = {
-      filename = "__ShuttleTrainRefresh__/graphics/tool-button.png",
-      flags = {"icon"},
-      priority = "extra-high-no-scale",
-      scale = 1,
-      size = 24
-    },
+    icon = "__ShuttleTrainRefresh__/graphics/tool-button.png",
+    icon_size = 32,
+    small_icon = "__ShuttleTrainRefresh__/graphics/tool-button.png",
+    small_icon_size = 24
   },
 })
 

@@ -45,7 +45,7 @@ data:extend({
 		name = "shuttle-train-global-exclude-invert",
 		order = "c2",
 		setting_type = "runtime-global",
-		default_value = "false",
+		default_value = false,
 	},
 	{
 		type = "bool-setting",
@@ -140,7 +140,7 @@ data:extend({
 		name = "shuttle-train-exclude-invert",
 		order = "o4",
 		setting_type = "runtime-per-user",
-		default_value = "false",
+		default_value = false,
 	},
 })
 

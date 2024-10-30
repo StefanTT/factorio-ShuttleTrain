@@ -47,10 +47,10 @@ end
 --        player_index :: uint (optional): The player who made the change if any
 --
 function onTrainScheduleChanged(event)
-  if event.player_index and (global.playerTrain[event.player_index] or {}).id == event.train.id then
+  if event.player_index and (storage.playerTrain[event.player_index] or {}).id == event.train.id then
     local player = game.players[event.player_index]
     playerChangedTrainSchedule(player, event.train)
-    global.playerTrain[event.player_index] = nil
+    storage.playerTrain[event.player_index] = nil
   end
 end
 
@@ -64,7 +64,7 @@ end
 --
 local function onTrainChangedStatus(event)
   local train = event.train
-  if global.trackedTrains[train.id] and not ignoredStates[train.state] then
+  if storage.trackedTrains[train.id] and not ignoredStates[train.state] then
     onTrackedTrainChangedStatus(train)
   end
   -- Close the station selection dialog when the train is switched to manual control
@@ -162,7 +162,7 @@ function onGuiOpened(event)
     if player and event.entity and event.entity.train and isAnyShuttleTrain(event.entity.train) then
       local records = (event.entity.train.schedule or {}).records or {}
       log("Storing shuttle train schedule for player "..player.name)
-      global.playerTrain[event.player_index] = {id = event.entity.train.id, schedule = copyTrainScheduleRecordTargets(records)}
+      storage.playerTrain[event.player_index] = {id = event.entity.train.id, schedule = copyTrainScheduleRecordTargets(records)}
       if player.vehicle and player.vehicle.train == event.entity.train then
         closeDialog(player)
       end
@@ -190,7 +190,7 @@ function onGuiClosed(event)
 
   if event.gui_type == defines.gui_type.entity and event.entity.train then
     log("Clearing shuttle train schedule of player " .. player.name)
-    global.playerTrain[player.index] = nil
+    storage.playerTrain[player.index] = nil
   elseif event.gui_type == defines.gui_type.custom and event.element and event.element.name == "shuttleTrainDialog" then
     closeDialog(player)
   end
@@ -216,7 +216,7 @@ function onGuiClick(event)
   elseif string.match(name, "^"..DIALOG_STATION_PREFIX) then
     playerClickedStation(game.players[event.player_index], event.element.caption)
   elseif string.match(name, "^"..DIALOG_CATEGORY_PREFIX) then
-    global.selectedCategory[event.player_index] = event.element.caption
+    storage.selectedCategory[event.player_index] = event.element.caption
     updateStationsDialog(game.players[event.player_index])
   end
 end
@@ -258,7 +258,7 @@ end
 --
 function onEntityRenamed(event)
   if event.entity.type == "train-stop" then
-    for _,history in pairs(global.history) do
+    for _,history in pairs(storage.history) do
       for i = 1,#history do
         if history[i] == event.old_name then
           history[i] = event.entity.backer_name
@@ -278,7 +278,7 @@ end
 function onEntityRemoved(event)
   if event.entity.type == "train-stop" then
     local name = event.entity.backer_name
-    for _,history in pairs(global.history) do
+    for _,history in pairs(storage.history) do
       for i = #history,1,-1 do
         if history[i] == name then
           table.remove(history, i)

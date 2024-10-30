@@ -63,7 +63,7 @@ local function addTitlebar(dialog)
   flow_buttonbar.style.top_margin = 4
 
   local closeButton = flow_buttonbar.add{type = "sprite-button", name = DIALOG_CLOSE_NAME,
-    style = "frame_action_button", sprite = "utility/close_white", mouse_button_filter = {"left"}}
+    style = "frame_action_button", sprite = "utility/close", mouse_button_filter = {"left"}}
   closeButton.style.left_margin = 2
   closeButton.style.top_margin = 0
 end
@@ -114,9 +114,9 @@ function openDialog(player)
 
   local defaultCategorySetting = settings.get_player_settings(player)["shuttle-train-dialog-default"].value
   if defaultCategorySetting == "history" then
-    global.selectedCategory[player.index] = DIALOG_CATEGORY_HISTORY
+    storage.selectedCategory[player.index] = DIALOG_CATEGORY_HISTORY
   elseif defaultCategorySetting == "all" then
-    global.selectedCategory[player.index] = nil
+    storage.selectedCategory[player.index] = nil
   end
 
   updateStationsDialog(player)
@@ -178,7 +178,7 @@ function updateStationsDialog(player)
     end
   end
 
-  local selectedCategory = global.selectedCategory[player.index] or DIALOG_CATEGORY_ALL
+  local selectedCategory = storage.selectedCategory[player.index] or DIALOG_CATEGORY_ALL
   local filterCategory = selectedCategory
   if selectedCategory == DIALOG_CATEGORY_ALL then filterCategory = nil end
 
@@ -197,7 +197,7 @@ function updateStationsDialog(player)
   if search ~= "" then
     selectedCategory = DIALOG_CATEGORY_ALL
   elseif selectedCategory == DIALOG_CATEGORY_HISTORY then
-    stationNames = global.history[player.index] or {}
+    stationNames = storage.history[player.index] or {}
     filterCategory = nil
   end
 

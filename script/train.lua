@@ -179,7 +179,7 @@ end
 -- @param destination The LuaEntity of the destination station or destination rail
 --
 function transportTo(train, player, destination)
-  if not destination.valid then return end
+  if not destination or not destination.valid then return end
 
   log("transport via shuttle train "..train.front_stock.backer_name.." to "..(destination.backer_name or "rail").." for "..player.name)
   train.manual_mode = true
@@ -212,11 +212,11 @@ end
 --
 function onTrackedTrainControlTimer()
   --log("control tracked trains")
-  for id,track in pairs(global.trackedTrains) do
+  for id,track in pairs(storage.trackedTrains) do
     local train = track.train
     if not train.valid or untrack[train.state] then
       untrackTrain(train, id)
-      return -- avoid problems because we modified global.trackedTrains
+      return -- avoid problems because we modified storage.trackedTrains
     end
   end
 end
@@ -228,7 +228,7 @@ end
 -- @param train The tracked LuaTrain that changed status
 --
 function onTrackedTrainChangedStatus(train)
-  local track = global.trackedTrains[train.id]
+  local track = storage.trackedTrains[train.id]
   local status = train.state
   if status == defines.train_state.wait_station then
     if train.station and train.station.backer_name == track.destinationName then
@@ -287,7 +287,7 @@ end
 --
 function trackTrain(train, player, destination, status)
   log("start tracking train #"..train.id)
-  global.trackedTrains[train.id] = { train = train, player = player, status = status,
+  storage.trackedTrains[train.id] = { train = train, player = player, status = status,
     destinationName = destination.backer_name, timeout = game.tick + TRACK_TIMEOUT}
 end
 
@@ -300,7 +300,7 @@ end
 --
 function untrackTrain(train, id)
   if not id then id = train.id end
-  global.trackedTrains[id] = nil
+  storage.trackedTrains[id] = nil
   log("stop tracking train #"..id)
 end
 
