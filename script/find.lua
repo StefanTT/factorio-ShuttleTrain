@@ -21,8 +21,8 @@ function findShuttleTrainFor(player)
   local match = nil
 
   local ignoreManual = settings.global['shuttle-train-global-ignore-manual-trains'].value
-
-	for _,train in next, player.force.get_trains(player.surface) do
+  
+	for _,train in next, game.train_manager.get_trains({ surface = player.physical_surface, force = player.force }) do
     if available[train.state] and #train.passengers == 0 and isAutomaticShuttleTrain(train) and
       (not ignoreManual or train.state ~= defines.train_state.manual_control) then
 
